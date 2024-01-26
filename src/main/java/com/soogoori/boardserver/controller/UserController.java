@@ -1,5 +1,6 @@
 package com.soogoori.boardserver.controller;
 
+import com.soogoori.boardserver.aop.LoginCheck;
 import com.soogoori.boardserver.dto.UserDto;
 import com.soogoori.boardserver.dto.request.UserDeleteId;
 import com.soogoori.boardserver.dto.request.UserLoginRequest;
@@ -73,6 +74,7 @@ public class UserController {
     }
 
     @PatchMapping("password")
+    @LoginCheck(type = LoginCheck.UserType.USER)
     public ResponseEntity<LoginResponse> updateUserPassword(@RequestBody UserUpdatePasswordRequest userUpdatePasswordRequest,
                                                             HttpSession session) {
         ResponseEntity<LoginResponse> responseEntity = null;
