@@ -4,6 +4,7 @@ import com.soogoori.boardserver.dto.CommentDto;
 import com.soogoori.boardserver.dto.PostDto;
 import com.soogoori.boardserver.dto.TagDto;
 import com.soogoori.boardserver.dto.UserDto;
+import com.soogoori.boardserver.exception.BoardServerException;
 import com.soogoori.boardserver.mapper.CommentMapper;
 import com.soogoori.boardserver.mapper.PostMapper;
 import com.soogoori.boardserver.mapper.TagMapper;
@@ -11,6 +12,7 @@ import com.soogoori.boardserver.mapper.UserProfileMapper;
 import com.soogoori.boardserver.service.PostService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -55,14 +57,25 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostDto> getMyProducts(int accountId) {
-        List<PostDto> postDtoList = postMapper.selectMyProducts(accountId);
-        return postDtoList;
+        List<PostDto> postDTOList = null;
+        try {
+            postDTOList = postMapper.selectMyProducts(accountId);
+        } catch (RuntimeException e) {
+            log.error("getMyProducts 실패");
+            throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        return postDTOList;
     }
 
     @Override
     public void updateProducts(PostDto postDto) {
         if (postDto != null && postDto.getId() != 0 && postDto.getUserId() != 0) {
-            postMapper.updateProducts(postDto);
+            try {
+                postMapper.updateProducts(postDto);
+            } catch (RuntimeException e) {
+                log.error("updateProducts 실패");
+                throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         } else {
             log.error("updateProducts ERROR! {}", postDto);
             throw new RuntimeException("updateProducts ERROR! 물품 변경 메서드를 확인해주세요\n" + "Params : " + postDto);
@@ -82,7 +95,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void registerComment(CommentDto commentDto) {
         if (commentDto.getPostId() != 0) {
-            commentMapper.register(commentDto);
+            try {
+                commentMapper.register(commentDto);
+            } catch (RuntimeException e) {
+                log.error("register 실패");
+                throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         } else {
             log.error("registerComment ERROR! {}", commentDto);
             throw new RuntimeException("registerComment ERROR! 댓글 추가 메서드를 확인해주세요\n" + "Params : " + commentDto);
@@ -92,7 +110,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void updateComment(CommentDto commentDto) {
         if (commentDto != null) {
-            commentMapper.updateComments(commentDto);
+            try {
+                commentMapper.updateComments(commentDto);
+            } catch (RuntimeException e) {
+                log.error("updateComments 실패");
+                throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         } else {
             log.error("updateComment ERROR!");
             throw new RuntimeException("updateComment ERROR! 댓글 변경 메서드를 확인해주세요\n");
@@ -102,7 +125,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePostComment(int userId, int commentId) {
         if (userId != 0 && commentId != 0) {
-            commentMapper.deletePostComment(commentId);
+            try {
+                commentMapper.deletePostComment(commentId);
+            } catch (RuntimeException e) {
+                log.error("deletePostComment 실패");
+                throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         } else {
             log.error("deletePostComment ERROR! {}", commentId);
             throw new RuntimeException("deletePostComment ERROR! 댓글 삭제 메서드를 확인해주세요\n" + "Params : " + commentId);
@@ -112,7 +140,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void registerTag(TagDto tagDto) {
         if (tagDto.getPostId() != 0) {
-            tagMapper.register(tagDto);
+            try {
+                tagMapper.register(tagDto);
+            } catch (RuntimeException e) {
+                log.error("register 실패");
+                throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         } else {
             log.error("registerTag ERROR! {}", tagDto);
             throw new RuntimeException("registerTag ERROR! 태그 추가 메서드를 확인해주세요\n" + "Params : " + tagDto);
@@ -122,7 +155,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void updateTag(TagDto tagDto) {
         if (tagDto != null) {
-            tagMapper.updateTags(tagDto);
+            try {
+                tagMapper.updateTags(tagDto);
+            } catch (RuntimeException e) {
+                log.error("updateTags 실패");
+                throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         } else {
             log.error("updateTag ERROR!");
             throw new RuntimeException("updateTag ERROR! 태그 변경 메서드를 확인해주세요\n");
@@ -132,7 +170,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePostTag(int userId, int tagId) {
         if (userId != 0 && tagId != 0) {
-            tagMapper.deletePostTag(tagId);
+            try {
+                tagMapper.deletePostTag(tagId);
+            } catch (RuntimeException e) {
+                log.error("deletePostTag 실패");
+                throw new BoardServerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
         } else {
             log.error("deletePostTag ERROR! {}", tagId);
             throw new RuntimeException("deletePostTag ERROR! 태그 삭제 메서드를 확인해주세요\n" + "Params : " + tagId);

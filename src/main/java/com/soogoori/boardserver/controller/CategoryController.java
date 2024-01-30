@@ -2,6 +2,7 @@ package com.soogoori.boardserver.controller;
 
 import com.soogoori.boardserver.aop.LoginCheck;
 import com.soogoori.boardserver.dto.CategoryDto;
+import com.soogoori.boardserver.dto.SortStatus;
 import com.soogoori.boardserver.service.impl.CategoryServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class CategoryController {
                                  @PathVariable(name = "categoryId") int categoryId,
                                  @RequestBody CategoryRequest categoryRequest) {
         CategoryDto categoryDTO = new CategoryDto(categoryId, categoryRequest.getName(),
-                                        CategoryDto.SortStatus.NEWEST,10,1);
+                                        SortStatus.NEWEST,10,1);
         categoryService.update(categoryDTO);
     }
 
